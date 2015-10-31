@@ -3,11 +3,9 @@
  */
 (function() {
 
-    'use strict';
+    "use strict";
 
     angular
-        .module('app', [
-            'app.chat'
-        ]);
+        .module('chat', []);
 
 })();

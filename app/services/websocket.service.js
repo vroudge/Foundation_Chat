@@ -4,7 +4,7 @@
 
 
 angular
-    .module('foundation-chat')
+    .module('app')
     .service('websocket', websocket);
 
 function websocket() {
