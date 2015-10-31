@@ -45,7 +45,7 @@ io.on('connection', function(socket){
                 break;
             case "event:chatMessage":
                 io.sockets["in"](socket.room).emit('event:chatMessage', data.user, data);
-                console.log(socket.room);
+
                 break;
             case "event:joinRoom":
                 socket.join(data.roomName);
@@ -106,7 +106,6 @@ var toolBox = {
         if(globals.connectedClients.length>0){
             var i = globals.connectedClients.length-1;
             while(i>0){
-                console.log(name);
                 if(globals.connectedClients[i].name === name){
                     return true;
                 }

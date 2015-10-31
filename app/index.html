@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <title></title>
 </head>
-<body ng-app="app" class="" ng-controller="coreCtrl as main">
+< ng-app="app" class="" ng-controller="coreCtrl as main">
 
-
+<body>
 <div ng-controller="chatCtrl as chat">
     <div ng-hide="chat.signedIn">Not logged-in. Please type /signup yournamehere to proceed.</div>
-
-
-
 
     <div ng-hide="!chat.signedIn">
         <div >Logged in as: {{chat.displayedUserName}} in the #{{chat.currentRoom}} channel</div>
@@ -28,9 +25,9 @@
     <div ng-if="chat.unknownCommand" style="color:red">Unknown command!</div>
 </div>
 
-<div ng-if="displayHelp" >
-    type /signup yourname to login to the chat server
-
+<div>
+    - type /signup yourname to login to the chat server
+    - type /room join channelhere to join a chat channel
 </div>
 
 
