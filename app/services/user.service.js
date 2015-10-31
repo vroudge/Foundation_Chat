@@ -11,7 +11,19 @@
         .service('userService', userService);
 
     function userService() {
+        var username = "";
 
+        this.isAuth = function(){
+            return !(username == "");
+        };
+
+        this.getName = function(){
+            return username;
+        };
+
+        this.setName = function(checkedName){
+            username = checkedName;
+        };
     }
 
 })();
