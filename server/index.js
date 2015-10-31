@@ -11,16 +11,10 @@ var io = require('socket.io')(http);
 var globals = {
     config:{
         runningPort:1337
-    }
+    },
+    connectedClients : [],
+    roomList:[{name:"lobby", messageList:""}]
 };
-
-http.listen(globals.config.runningPort, function(){
-    console.log('listening on *:'+globals.config.runningPort);
-});
-
-
-var connectedClients = [],//connected clients
-    roomList = []; //room list (captain obvious)
 
 //io wrapper for all events
 io.on('connection', function(socket){
@@ -30,8 +24,11 @@ io.on('connection', function(socket){
     //send unique ID to client immediately
     socket.send({"event:registeredId":socket.id});
 
+    socket.room = "lobby";
+    socket.join("Lobby");
+
     //and add him to the client list
-    connectedClients.push(toolBox.createUser(socket.id));
+    globals.connectedClients.push(toolBox.createUser(socket.id));
 
     //listener for all client messages
     socket.on('message', function(eventName, data){
@@ -39,15 +36,21 @@ io.on('connection', function(socket){
             case "event:queryingName":
                 if(!toolBox.isNameIsAlreadyTaken(data.name)){
                     var currentClientIndex = toolBox.getIndexOfClientFromConnectedListById(socket.id);
-                    connectedClients[currentClientIndex].name = data.name;
+                    globals.connectedClients[currentClientIndex].name = data.name;
 
                     socket.broadcast.send('event:updateUserList', {list:toolBox.createSendableClientList()});
                     socket.send('event:updateUserList', {list:toolBox.createSendableClientList()});
-                    socket.send("event:authenticated", {isAuth:true, name:data.name});
+                    socket.send("event:authenticated", {isAuth:true, name:data.name, room:socket.room});
                 }
                 break;
             case "event:chatMessage":
-
+                io.sockets["in"](socket.room).emit('event:chatMessage', data.user, data);
+                console.log(socket.room);
+                break;
+            case "event:joinRoom":
+                socket.join(data.roomName);
+                socket.room = data.roomName;
+                socket.send("event:joinRoom", {room:data.roomName});
                 break;
             default:
                 break;
@@ -57,8 +60,8 @@ io.on('connection', function(socket){
     //ensure the list of connected clients is kept clean
     socket.on('disconnect', function(){
         console.log("User with Id="+socket.id+" disconnected");
-        var i = connectedClients.indexOf(socket);
-        connectedClients.splice(i, 1)
+        var i = globals.connectedClients.indexOf(socket);
+        globals.connectedClients.splice(i, 1)
     })
 });
 
@@ -72,7 +75,9 @@ var toolBox = {
     createUser:function(id){
         return {
             id:id,
-            name:""
+            name:"",
+            room:"",
+            isAdmin:false
         }
     },
     /**
@@ -80,16 +85,16 @@ var toolBox = {
      */
     createSendableClientList:function() {
         var sendableList = [];
-        connectedClients.forEach(function(elem,index,array){
+        globals.connectedClients.forEach(function(elem,index,array){
             sendableList.push(elem.name);
         });
         return sendableList;
     },
 
     getIndexOfClientFromConnectedListById:function(id){
-        var i = connectedClients.length-1;
+        var i = globals.connectedClients.length-1;
         while(i>0){
-            if(id === connectedClients[i]){
+            if(id === globals.connectedClients[i]){
                 return i;
             }
             --i;
@@ -98,11 +103,11 @@ var toolBox = {
     },
 
     isNameIsAlreadyTaken:function(name){
-        if(connectedClients.length>0){
-            var i = connectedClients.length-1;
+        if(globals.connectedClients.length>0){
+            var i = globals.connectedClients.length-1;
             while(i>0){
                 console.log(name);
-                if(connectedClients[i].name === name){
+                if(globals.connectedClients[i].name === name){
                     return true;
                 }
                 --i;
@@ -116,6 +121,10 @@ var toolBox = {
 
 
 };
+
+http.listen(globals.config.runningPort, function(){
+    console.log('listening on *:'+globals.config.runningPort);
+});
 
 
 

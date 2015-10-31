@@ -7,33 +7,45 @@
 <body ng-app="app" class="" ng-controller="coreCtrl as main">
 
 
-    <div ng-controller="chatCtrl as chat">
-        <div ng-if="chat.displayedUserName!==''"></div>
-        <input type="text" ng-model="chat.dataToSend" />
-        <button ng-click="chat.sendMessage()">Send</button>
+<div ng-controller="chatCtrl as chat">
+    <div ng-hide="chat.signedIn">Not logged-in. Please type /signup yournamehere to proceed.</div>
 
-        <div ng-if="chat.invalidCommand" style="color:red">Invalid command!</div>
-        <div ng-if="chat.unknownCommand" style="color:red">Unknown command!</div>
+
+
+
+    <div ng-hide="!chat.signedIn">
+        <div >Logged in as: {{chat.displayedUserName}} in the #{{chat.currentRoom}} channel</div>
+        Currently connected:
+        <ul ng-repeat="(key, value) in chat.participantList">
+            <li>{{value}}</li>
+        </ul>
     </div>
 
-    <div ng-if="displayHelp" >
-        type /signup yourname to login to the chat server
+    <input type="text" ng-model="chat.dataToSend" />
+    <button ng-click="chat.sendMessage()">Send</button>
 
-    </div>
+    <div ng-if="chat.invalidCommand" style="color:red">Invalid command!</div>
+    <div ng-if="chat.unknownCommand" style="color:red">Unknown command!</div>
+</div>
+
+<div ng-if="displayHelp" >
+    type /signup yourname to login to the chat server
+
+</div>
 
 
-    <script src="../bower_components/socket.io-client/socket.io.js"></script>
-    <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
-    <script type="text/javascript" src="app.module.js"></script>
-    <script type="text/javascript" src="app.constants.js"></script>
+<script src="../bower_components/socket.io-client/socket.io.js"></script>
+<script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
+<script type="text/javascript" src="app.module.js"></script>
+<script type="text/javascript" src="app.constants.js"></script>
 
-    <script type="text/javascript" src="services/user.service.js"></script>
-    <script type="text/javascript" src="services/websocket.service.js"></script>
+<script type="text/javascript" src="services/user.service.js"></script>
+<script type="text/javascript" src="services/websocket.service.js"></script>
 
-    <script type="text/javascript" src="core/core.module.js"></script>
-    <script type="text/javascript" src="core/core.controller.js"></script>
+<script type="text/javascript" src="core/core.module.js"></script>
+<script type="text/javascript" src="core/core.controller.js"></script>
 
-    <script type="text/javascript" src="chat/chat.module.js"></script>
-    <script type="text/javascript" src="chat/chat.controller.js"></script>
+<script type="text/javascript" src="chat/chat.module.js"></script>
+<script type="text/javascript" src="chat/chat.controller.js"></script>
 </body>
 </html>

@@ -13,7 +13,6 @@
     function websocketService($rootScope, socketServer, userService) {
         var socket = {};
         var isConnected = false;
-        var currentRoom = "";
 
         /** socket events **/
 
@@ -26,12 +25,16 @@
         socket.on('message', function(message, data){
             switch(message){
                 case 'event:updateUserList':
-                    console.log(data);
+                    $rootScope.$broadcast('$update_participant_list',{list:data.list});
                     break;
                 case 'event:authenticated' :
-                    console.log(data);
-                    $rootScope.$broadcast();
+                    $rootScope.$broadcast('$user_authenticated',{name:data.name, room:data.room });
                     break;
+                case 'event:chatMessage' :
+                    $rootScope.$broadcast('$chat_message',{data:data.list});
+                    break;
+                case "event:joinRoom" :
+                    $rootScope.$broadcast('$room_update', {room:data.room});
                 default:
                     break;
             }
@@ -53,10 +56,6 @@
 
         this.sendChatMessage = function(message){
             socket.send("event:chatMessage", {user:userService.getName(), message:message});
-        };
-
-        this.getCurrentRoom = function(){
-            return currentRoom;
         };
 
         this.setRoom = function(roomName){
