@@ -6,6 +6,6 @@
     "use strict";
 
     angular
-        .module('app.chat', []);
+        .module('app.core', []);
 
 })();

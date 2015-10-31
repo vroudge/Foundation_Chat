@@ -2,11 +2,33 @@
  * Created by Psykopatik on 31/10/2015.
  */
 
+(function(){
 
-angular
-    .module('app')
-    .service('websocket', websocket);
+    "use strict";
 
-function websocket() {
-    var socket = io();
-}
+    angular
+        .module('app')
+        .service('websocketService', websocketService);
+
+    function websocketService(socketServer) {
+        var socket = io(socketServer.location);
+
+        this.sendChatMessage = function(user, message){
+            socket.send({user:user, message:message});
+        };
+
+        this.signUp = function(){
+
+        };
+
+        this.getCurrentRoom = function(){
+
+        };
+
+        this.setRoom = function(roomName){
+
+        };
+    }
+
+
+})();

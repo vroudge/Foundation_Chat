@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <title></title>
 </head>
-<body>
+<body ng-app="app" class="" ng-controller="coreCtrl as main">
+
+
+    <div ng-controller="chatCtrl as chat">
+        <input type="text" ng-model="chat.dataToSend" />
+        <button ng-click="chat.sendMessage(chat.dataToSend)">Send</button>
+    </div>
+
 
     <script src="../bower_components/socket.io-client/socket.io.js"></script>
     <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
@@ -12,6 +19,10 @@
     <script type="text/javascript" src="app.constants.js"></script>
 
     <script type="text/javascript" src="services/websocket.service.js"></script>
+
+    <script type="text/javascript" src="core/core.module.js"></script>
+    <script type="text/javascript" src="core/core.controller.js"></script>
+
     <script type="text/javascript" src="chat/chat.module.js"></script>
     <script type="text/javascript" src="chat/chat.controller.js"></script>
 </body>

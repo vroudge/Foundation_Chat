@@ -8,12 +8,18 @@
     "use strict";
 
     angular
-        .module('chat')
+        .module('app.chat')
         .controller('chatCtrl', chatCtrl);
 
-    function chatCtrl(){
+    function chatCtrl(websocketService){
         var vm = this;
+        vm.dataToSend = "";
 
+        vm.sendMessage = sendMessage;
+
+        function sendMessage(message){
+            websocketService.sendChatMessage(message);
+        }
     }
 
 })();
